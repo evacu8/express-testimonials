@@ -1,7 +1,7 @@
 import { Button, Form, FormGroup, Label, Input, Row, Col, Alert, Progress } from 'reactstrap';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addSeatRequest, getRequests } from '../../../redux/seatsRedux';
+import { addSeatRequest, getRequests, loadSeatsRequest } from '../../../redux/seatsRedux';
 
 import './OrderTicketForm.scss';
 import SeatChooser from './../SeatChooser/SeatChooser';
@@ -9,12 +9,12 @@ import SeatChooser from './../SeatChooser/SeatChooser';
 const OrderTicketForm = () => {
   const dispatch = useDispatch();
   const requests = useSelector(getRequests);
-  console.log(requests);
+  const [orderDay, setOrderDay] = useState(1);
 
   const [order, setOrder] = useState({
     client: '',
     email: '',
-    day: 1,
+    day: orderDay,
     seat: ''
   });
   const [isError, setIsError] = useState(false);
@@ -31,6 +31,7 @@ const OrderTicketForm = () => {
 
   const updateNumberField = ({ target }) => {
     const { value, name } = target;
+    setOrderDay(parseInt(value))
     setOrder({ ...order, [name]: parseInt(value) });
   }
 
@@ -38,13 +39,14 @@ const OrderTicketForm = () => {
     e.preventDefault();
 
     if(order.client && order.email && order.day && order.seat) {
-      dispatch(addSeatRequest(order));
+      await dispatch(addSeatRequest(order));
       setOrder({
         client: '',
         email: '',
-        day: 1,
+        day: orderDay,
         seat: '',
       });
+      dispatch(loadSeatsRequest())
       setIsError(false);
     } else {
       setIsError(true);
@@ -85,7 +87,7 @@ const OrderTicketForm = () => {
         </Col>
         <Col xs="12" md="6">
           <SeatChooser 
-            chosenDay={order.day}
+            chosenDay={orderDay}
             chosenSeat={order.seat} 
             updateSeat={updateSeat} />
         </Col>
