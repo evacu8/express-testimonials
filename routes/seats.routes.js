@@ -18,9 +18,15 @@ router.route('/seats/:id').get((req, res) => {
 });
 
 router.route('/seats').post((req, res) => {
-  const bodyObj = {id: randomId(), ...req.body}
-  seats.push(bodyObj);
-  res.json({ message: 'OK' })
+  if(seats.some((seat) => {
+    seat.day === req.body.day && seat.seat === req.body.seat
+  })){
+    res.json({ message: "The slot is already taken..." })
+  } else {
+    const bodyObj = {id: randomId(), ...req.body}
+    seats.push(bodyObj);
+    res.json({ message: 'OK' })
+  }
 });
 
 router.route('/seats/:id').put((req, res) => {
