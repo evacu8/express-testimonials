@@ -1,5 +1,4 @@
 const express = require('express');
-const hbs = require('express-handlebars');
 const path = require('path');
 const cors = require('cors');
 
@@ -9,10 +8,6 @@ const testimonialsRoutes = require('./routes/testimonials.routes');
 const concertsRoutes = require('./routes/concerts.routes');
 const seatsRoutes = require('./routes/seats.routes');
 
-app.engine('hbs', hbs());
-app.set('view engine', 'hbs');
-
-app.engine('hbs', hbs({ extname: 'hbs', layoutsDir: './layouts', defaultLayout: 'main' }));
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
