@@ -18,7 +18,7 @@
     "singleQuote": true
   },
   "scripts": {
-    "start": "node server.js",
+    "start": "nodemon server.js",
     "build": "cd client && yarn install && yarn build"
   }
 }
