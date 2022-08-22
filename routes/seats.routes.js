@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../db');
-const { getById, randomId, randomItem } = require('../utils/utlis')
+const { getById, randomId, randomItem } = require('../utils/utlis');
 
 const seats = db.seats;
 
@@ -18,14 +18,17 @@ router.route('/seats/:id').get((req, res) => {
 });
 
 router.route('/seats').post((req, res) => {
-  if(seats.some((seat) => {
-    seat.day === req.body.day && seat.seat === req.body.seat
-  })){
-    res.json({ message: "The slot is already taken..." })
+  if (
+    seats.some((seat) => {
+      seat.day === req.body.day && seat.seat === req.body.seat;
+    })
+  ) {
+    res.json({ message: 'The slot is already taken...' });
   } else {
-    const bodyObj = {id: randomId(), ...req.body}
+    const bodyObj = { id: randomId(), ...req.body };
     seats.push(bodyObj);
-    res.json({ message: 'OK' })
+    req.io.emit('seatsUpdated', seats);
+    res.json({ message: 'OK' });
   }
 });
 
@@ -34,15 +37,14 @@ router.route('/seats/:id').put((req, res) => {
   const id = +req.params.id;
   const index = seats.findIndex((item) => item.id === id);
   seats[index] = { id: id, ...newData };
-  res.json({ message: 'OK' })
+  res.json({ message: 'OK' });
 });
 
 router.route('/seats/:id').delete((req, res) => {
   const id = +req.params.id;
   const index = seats.findIndex((item) => item.id === id);
-  seats.splice(index, 1)
-  res.json({ message: 'OK' })
+  seats.splice(index, 1);
+  res.json({ message: 'OK' });
 });
-
 
 module.exports = router;
