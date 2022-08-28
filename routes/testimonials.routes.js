@@ -1,42 +1,17 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../db');
-const { getById, randomId, randomItem } = require('../utils/utlis')
+const TestimonialController = require('../controllers/testimonials.controller');
 
-const testimonials = db.testimonials;
+router.route('/testimonials').get(TestimonialController.getAll);
 
-router.route('/testimonials').get((req, res) => {
-  res.json(testimonials);
-});
+router.route('/testimonials/random').get(TestimonialController.getRandom);
 
-router.route('/testimonials/random').get((req, res) => {
-  res.json(getById(randomItem(testimonials), testimonials));
-});
+router.route('/testimonials/:id').get(TestimonialController.getById);
 
-router.route('/testimonials/:id').get((req, res) => {
-  res.json(getById(+req.params.id, testimonials));
-});
+router.route('/testimonials').post(TestimonialController.create);
 
-router.route('/testimonials').post((req, res) => {
-  const bodyObj = {id: randomId(), ...req.body}
-  testimonials.push(bodyObj);
-  res.json({ message: 'OK' })
-});
+router.route('/testimonials/:id').put(TestimonialController.update);
 
-router.route('/testimonials/:id').put((req, res) => {
-  const newData = req.body;
-  const id = +req.params.id;
-  const index = testimonials.findIndex((item) => item.id === id);
-  testimonials[index] = { id: id, ...newData };
-  res.json({ message: 'OK' })
-});
-
-router.route('/testimonials/:id').delete((req, res) => {
-  const id = +req.params.id;
-  const index = testimonials.findIndex((item) => item.id === id);
-  testimonials.splice(index, 1)
-  res.json({ message: 'OK' })
-});
-
+router.route('/testimonials/:id').delete(TestimonialController.delete);
 
 module.exports = router;

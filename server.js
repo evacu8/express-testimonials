@@ -6,6 +6,16 @@ const mongoose = require('mongoose');
 
 const app = express();
 
+mongoose.connect('mongodb://localhost:27017/NewWaveDB', {
+  useNewUrlParser: true,
+});
+const db = mongoose.connection;
+
+db.once('open', () => {
+  console.log('Connected to the database');
+});
+db.on('error', (err) => console.log('Error ' + err));
+
 const server = app.listen(process.env.PORT || 8000, () => {
   console.log('Server is running on port: 8000');
 });
@@ -43,16 +53,6 @@ app.get('*', (req, res) => {
 app.use((req, res) => {
   res.status(404).json({ message: 'Not found...' });
 });
-
-mongoose.connect('mongodb://localhost:27017/NewWaveDB', {
-  useNewUrlParser: true,
-});
-const db = mongoose.connection;
-
-db.once('open', () => {
-  console.log('Connected to the database');
-});
-db.on('error', (err) => console.log('Error ' + err));
 
 io.on('connection', (socket) => {
   console.log('New socket with ID:', socket.id);
