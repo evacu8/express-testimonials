@@ -6,7 +6,10 @@ const mongoose = require('mongoose');
 
 const app = express();
 
-mongoose.connect('mongodb://localhost:27017/NewWaveDB', {
+const uri =
+  'mongodb+srv://krzysztof:2D9WW6EX5RZHejlX@cluster0.x6ckr2m.mongodb.net/NewWaveDB';
+
+mongoose.connect(uri, {
   useNewUrlParser: true,
 });
 const db = mongoose.connection;
