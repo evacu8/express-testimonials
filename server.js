@@ -7,11 +7,10 @@ const mongoose = require('mongoose');
 const app = express();
 
 const NODE_ENV = process.env.NODE_ENV;
+const DB_URI = process.env.DB_URI;
 let dbUri = '';
 
-if (NODE_ENV === 'production')
-  dbUri =
-    'mongodb+srv://krzysztof:2D9WW6EX5RZHejlX@cluster0.x6ckr2m.mongodb.net/NewWaveDB';
+if (NODE_ENV === 'production') dbUri = DB_URI;
 else if (NODE_ENV === 'test') dbUri = 'mongodb://localhost:27017/NewWaveDBtest';
 else dbUri = 'mongodb://localhost:27017/NewWaveDB';
 
