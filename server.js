@@ -6,22 +6,24 @@ const mongoose = require('mongoose');
 
 const app = express();
 
-const uri =
-  'mongodb+srv://krzysztof:2D9WW6EX5RZHejlX@cluster0.x6ckr2m.mongodb.net/NewWaveDB';
+const NODE_ENV = process.env.NODE_ENV;
+let dbUri = '';
 
-mongoose.connect(uri, {
+if (NODE_ENV === 'production')
+  dbUri =
+    'mongodb+srv://krzysztof:2D9WW6EX5RZHejlX@cluster0.x6ckr2m.mongodb.net/NewWaveDB';
+else if (NODE_ENV === 'test') dbUri = 'mongodb://localhost:27017/NewWaveDBtest';
+else dbUri = 'mongodb://localhost:27017/NewWaveDB';
+
+mongoose.connect(dbUri, {
   useNewUrlParser: true,
 });
 const db = mongoose.connection;
 
-db.once('open', () => {
-  console.log('Connected to the database');
-});
+db.once('open', () => {});
 db.on('error', (err) => console.log('Error ' + err));
 
-const server = app.listen(process.env.PORT || 8000, () => {
-  console.log('Server is running on port: 8000');
-});
+const server = app.listen(process.env.PORT || 8000, () => {});
 
 const io = new Server(server, {
   cors: {
@@ -60,3 +62,5 @@ app.use((req, res) => {
 io.on('connection', (socket) => {
   console.log('New socket with ID:', socket.id);
 });
+
+module.exports = server;
